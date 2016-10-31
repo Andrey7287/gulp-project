@@ -1,0 +1,22 @@
+@import "../node_modules/normalize.scss/normalize.scss";
+@import "../node_modules/slick-carousel/slick/slick.scss";
+
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,700,800';
+
+@import "bootstrap";
+
+@import "compass/css3/images";
+@import "mixins";
+@import "variables";
+@import "common";
+
+@import "header";
+@import "menu";
+@import "slider";
+@import "main";
+@import "aside";
+@import "footer";
+
+@import "map";
+@import "components.hamburger";
+@import "fancybox";

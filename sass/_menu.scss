@@ -1,0 +1,126 @@
+$menu-bkg: #fff;
+$menu-bkg-inner: #e9f6fa;
+$menu-hov: #01a3d4;
+$menu-height: 34px;
+$menu-color: grey;
+$menu-color-hov: #fff;
+
+@mixin nav {
+	display: table;
+	width: 100%;
+	@include breakpoint(tablet) {
+		position: relative;
+	}
+	@include breakpoint(mobile) {
+		//display: none;
+		margin-top: 5px;
+	}
+	&__item {
+		@include breakpoint(desktop) {
+			position: relative;
+		}
+		display: table-cell;
+		vertical-align: middle;
+		text-align: center;
+		transition: background 0.3s;
+		@include breakpoint(mobile){
+			display: list-item;
+		}
+		a {
+			text-decoration: none;
+			display: table;
+			width: 100%;
+			height: 100%;
+			padding: 10px;
+			color: $menu-color;
+			span {
+				text-align: center;
+				display: table-cell;
+				vertical-align: middle;
+			}
+		}
+		&:hover,
+		&--act {
+			a {
+				background: $menu-hov;
+				color: $menu-color-hov;
+			}
+		}
+		.dropdown {
+			transform: translateY(-50%) scaleY(0);
+			width: 200px;
+			position: absolute;
+			top: calc(#{$menu-height} + 2px);
+			right: 0;
+			left: 0;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+			transition: transform 2s;
+			@include breakpoint(tablet){
+				width: 100%;
+				position: absolute;
+				left: 0;
+			}
+			@include breakpoint(mobile){
+				width: auto;
+				position: static;
+				display: block;
+			}
+			&__item {
+				position: relative;
+				text-align: center;
+				transition: background 0.3s;
+				a {
+					background: $menu-bkg-inner;
+					text-decoration: none;
+					display: table;
+					width: 100%;
+					height: 100%;
+					color: $menu-color;
+					span {
+						padding: 0 10px;
+						display: table-cell;
+						vertical-align: middle;
+						text-align: left;
+						@include breakpoint(mobile) {
+							text-align: center;
+						}
+					}
+				}
+				&:hover {
+					a {
+						background: $menu-hov;
+						color: $menu-color-hov;
+					}
+				}
+			}
+			&__closed {
+				opacity: 0;
+				z-index: -10;
+				@include breakpoint(mobile){
+					display: none;
+					opacity: 1;
+					z-index: 1200;
+				}
+			}
+			&__open {
+				opacity: 1;
+				z-index: 110;
+			}
+		}
+
+		&:hover {
+			.dropdown {
+				transform: translateY(0%) scaleY(1);
+				opacity: 1;
+				z-index: 100;
+			}
+		}
+	}
+
+}
+
+.site-nav {
+	@include nav;
+}

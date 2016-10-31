@@ -1,0 +1,53 @@
+@mixin clearfix {
+	&:after {
+	content: "";
+	display: table;
+	clear: both;
+	}
+}
+.clearfix {
+	@include clearfix;
+}
+
+@mixin breakpoint($point) {
+	@if $point == desktop {
+	@media (min-width: 992px) { @content; }
+	}
+	@if $point == tablet {
+	@media (min-width: 768px) and (max-width: 991px) { @content; }
+	}
+	@if $point == mobile {
+	@media (max-width: 767px) { @content; }
+	}
+	@if $point == small {
+		@media (max-width: 480px) { @content; }
+	}
+	//additional
+
+}
+
+@mixin font($size: $base-font-size, $height: $base-line-height, $weight: 400, $context: $base-font-size, $font: $default-font){
+	font-weight: $weight;
+
+	$this: $size/$context;
+
+	font-size: $this + em;
+	line-height: $height/$size + em;
+	font-family: $font;
+}
+
+@mixin link($color, $hov: darken($color, 15%)){
+	color: $color;
+	border-bottom: 1px solid $color;
+	transition: 0.3s;
+	text-decoration: none;
+	display: inline-block;
+	&:hover,
+	&:focus {
+		border-bottom: 1px solid transparent;
+		color: $hov;
+	}
+	&:focus {
+		outline: none;
+	}
+}
