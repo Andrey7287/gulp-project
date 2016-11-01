@@ -23,6 +23,11 @@
 		}]
 	});
 
+	$('.c-hamburger').click(function () {
+		$('.site-nav').toggleClass('mobile-open');
+		$('.site-nav').toggleClass('mobile-close');
+	});
+
 	var viewPort = window.matchMedia("(min-width: 768px)");
 
 	/*footer icons*/

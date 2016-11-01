@@ -89,6 +89,10 @@ d.slice(e-c+1,e+c+2).addClass("slick-active").attr("aria-hidden","false")),0===a
 		}]
 	});
 
+	$('.c-hamburger').click(function(){
+		$('.site-nav').toggleClass('mobile-open');
+		$('.site-nav').toggleClass('mobile-close');
+	});
 
 
 	var viewPort = window.matchMedia("(min-width: 768px)");
