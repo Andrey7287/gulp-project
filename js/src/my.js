@@ -22,8 +22,18 @@
 	});
 
 	$('.c-hamburger').click(function(){
-		$('.site-nav').toggleClass('mobile-open');
-		$('.site-nav').toggleClass('mobile-close');
+		var $nav = $('.site-nav');
+		$nav.toggleClass('mobile-open');
+		$nav.toggleClass('mobile-close');
+		if ( $nav.hasClass('hide') ){
+			$nav.removeClass('hide');
+			$nav.addClass('show');
+		} else {
+			$nav.removeClass('show');
+			setTimeout(function(){
+				$nav.addClass('hide');
+			}, 1000);
+		}
 	});
 
 
