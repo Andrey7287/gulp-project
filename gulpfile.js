@@ -20,12 +20,13 @@ gulp.task('compass', function() {
 
 gulp.task('babel', () => {
 		return gulp.src('./js/src/my.js')
-				.pipe(sourcemaps.init())
-				.pipe(babel({
-						presets: ['es2015']
-				}))
-				.pipe(sourcemaps.write('.'))
-				.pipe(gulp.dest('./js'));
+			.pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+			.pipe(sourcemaps.init())
+			.pipe(babel({
+					presets: ['es2015']
+			}))
+			.pipe(sourcemaps.write('.'))
+			.pipe(gulp.dest('./js'));
 });
 
 gulp.task('concat', function(){

@@ -1,8 +1,11 @@
-'use strict';
+"use strict";
 
 /*MY SCRIPTS START*/
 (function () {
 
+	var mobileView = window.matchMedia("(min-width: 768px)").matches;
+
+	//$('any').ravno();
 	$.fn.ravno = function () {
 		var maxH = -1;
 		var $cols = $(this).height("auto").each(function () {
@@ -12,31 +15,58 @@
 		$cols.height(maxH);
 	};
 
+	//Slider
 	$('.slider').slick({
 		prevArrow: $('.left'),
 		nextArrow: $('.right'),
 		responsive: [{
-			breakpoint: 768,
+			breakpoint: 480,
 			settings: {
 				arrows: false
 			}
 		}]
 	});
 
-	$('.c-hamburger').click(function () {
-		var $nav = $('.site-nav');
-		$nav.toggleClass('mobile-open');
-		$nav.toggleClass('mobile-close');
-		if ($nav.hasClass('hide')) {
-			$nav.removeClass('hide');
-			$nav.addClass('show');
+	function accordion(target, duration) {
+
+		target.toggleClass('mobile-open');
+		target.toggleClass('mobile-close');
+		if (target.hasClass('hide')) {
+			target.removeClass('hide');
+			target.addClass('show');
 		} else {
-			$nav.removeClass('show');
+			target.removeClass('show');
 			setTimeout(function () {
-				$nav.addClass('hide');
-			}, 1000);
+				target.addClass('hide');
+			}, duration);
 		}
+	}
+
+	//Mobile menu open
+	$('.c-hamburger').click(function () {
+
+		var $siteNav = $('.site-nav');
+		accordion($siteNav, 1000);
+		$(this).toggleClass('is-active');
 	});
+
+	//mobile menu accordion
+	$('.site-nav').on('click', '.site-nav__link', toggleMenu);
+
+	function toggleMenu(e) {
+
+		var $targetItem = $(this).parent(),
+		    $otherItems = $(this).parent().siblings(),
+		    $otherOpened = $menuItems.find('.show'),
+		    $target = $(this).next();
+
+		e.preventDefault();
+
+		$menuItems.removeClass('site-nav__item--act');
+		$targetItem.addClass('site-nav__item--act');
+		accordion($otherOpened, 1000);
+		accordion($target, 1000);
+	};
 
 	var viewPort = window.matchMedia("(min-width: 768px)");
 
@@ -68,15 +98,12 @@
 		}
 	})();
 
+	//map
 	(function initMap() {
-		var viewPort = window.matchMedia("(min-width: 768px)").matches,
-		    center = viewPort ? { lat: 55.685973, lng: 37.339480 } : { lat: 55.6873, lng: 37.338 },
+		var center = viewPort ? { lat: 55.685973, lng: 37.339480 } : { lat: 55.6873, lng: 37.338 },
 		    blueSqure = { lat: 55.68375, lng: 37.34281 },
 		    octagon = { lat: 55.681204, lng: 37.3396 },
-
-
-		//for html overlay
-		myLatlng = viewPort ? new google.maps.LatLng(55.6901, 37.323) : new google.maps.LatLng(55.6905, 37.3326);
+		    myLatlng = viewPort ? new google.maps.LatLng(55.6901, 37.323) : new google.maps.LatLng(55.6905, 37.3326);
 
 		// Create a map object and specify the DOM element for display.
 		var map = new google.maps.Map(document.getElementById('map'), {
@@ -94,7 +121,6 @@
 		//	icon: 'images/map/squre.png'
 		//});
 	})();
-	//google.maps.event.addDomListener(window, 'load', initMap);
 })();
 /*MY SCRIPTS END*/
 //# sourceMappingURL=my.js.map
