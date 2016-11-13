@@ -165,10 +165,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  $('.site-nav').on('click', '.site-nav__link', toggleMenu);
 
  function toggleMenu(e){
-
- 	e.preventDefault();
-
- 	var $targetItem = $(this).parent(),
+ 		e.preventDefault();
+ 		var $targetItem = $(this).parent(),
  			$otherItems = $(this).parent().siblings(),
  			$otherOpened = $otherItems.find('.show'),
  			$target = $(this).next();
