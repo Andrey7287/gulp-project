@@ -1,9 +1,11 @@
-"use strict";
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /*MY SCRIPTS START*/
 (function () {
-
-	var mobileView = window.matchMedia("(min-width: 768px)").matches;
 
 	//$('any').ravno();
 	$.fn.ravno = function () {
@@ -27,56 +29,156 @@
 		}]
 	});
 
-	function accordion(target, duration) {
+	var Menu = function () {
+		function Menu() {
+			var menu = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.site-nav';
+			var burger = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.c-hamburger';
 
-		target.toggleClass('mobile-open');
-		target.toggleClass('mobile-close');
-		if (target.hasClass('hide')) {
-			target.removeClass('hide');
-			target.addClass('show');
-		} else {
-			target.removeClass('show');
-			setTimeout(function () {
-				target.addClass('hide');
-			}, duration);
+			_classCallCheck(this, Menu);
+
+			this.menu = menu;
+			this.item = menu + '__item';
+			this.activeItem = this.item + '--act';
+			this.link = this.menu + '__link';
+			this.burger = burger;
+			this.mobile;
 		}
-	}
 
-	//Mobile menu open
-	$('.c-hamburger').click(function () {
+		_createClass(Menu, [{
+			key: 'accordion',
+			value: function accordion(target, duration) {
 
-		var $siteNav = $('.site-nav');
-		accordion($siteNav, 1000);
-		$(this).toggleClass('is-active');
-	});
+				target.toggleClass('mobile-open');
+				target.toggleClass('mobile-close');
+				if (target.hasClass('hide')) {
+					target.removeClass('hide');
+					target.addClass('show');
+				} else {
+					target.removeClass('show');
+					setTimeout(function () {
+						target.addClass('hide');
+					}, duration);
+				}
+			}
+		}, {
+			key: 'toggleActiveClass',
+			value: function toggleActiveClass(old, current) {
 
-	//mobile menu accordion
-	$('.site-nav').on('click', '.site-nav__link', toggleMenu);
+				old.removeClass(this.activeItem.slice(1));
+				current.addClass(this.activeItem.slice(1));
+			}
+		}, {
+			key: 'initBurger',
+			value: function initBurger() {
+				var _this = this;
 
-	function toggleMenu(e) {
+				$(this.burger).click(function () {
 
-		var $targetItem = $(this).parent(),
-		    $otherItems = $(this).parent().siblings(),
-		    $otherOpened = $menuItems.find('.show'),
-		    $target = $(this).next();
+					_this.accordion($(_this.menu), 1000);
+					$(_this).toggleClass('is-active');
+				});
+			}
+		}, {
+			key: 'initMobile',
+			value: function initMobile() {
+				var _this2 = this;
 
-		e.preventDefault();
+				$(this.menu).on('click', this.link, function (e) {
 
-		$menuItems.removeClass('site-nav__item--act');
-		$targetItem.addClass('site-nav__item--act');
-		accordion($otherOpened, 1000);
-		accordion($target, 1000);
-	};
+					e.preventDefault();
 
-	var viewPort = window.matchMedia("(min-width: 768px)");
+					var $target = $(e.target).is(_this2.link) ? $(e.target) : $(e.target).parent(),
+					    $targetItem = $target.parent(),
+					    $otherItems = $targetItem.siblings(),
+					    $otherOpened = $otherItems.find('.show'),
+					    $otherOpenedItem = $otherOpened.parent(),
+					    $innerMenu = $target.next();
 
-	/*footer icons*/
-	$('.soc').on('mousedown', '.soc__item', function () {
-		$(this).addClass('soc__item--mousedown');
-	});
-	$('.soc').on('mouseup', '.soc__item', function () {
-		$(this).removeClass('soc__item--mousedown');
-	});
+					if (!$innerMenu.length) {
+						location.href = $target.attr('href');
+						return;
+					}
+
+					_this2.toggleActiveClass($otherOpenedItem, $targetItem);
+					_this2.accordion($otherOpened, 1000);
+					_this2.accordion($innerMenu, 1000);
+				});
+			}
+		}, {
+			key: 'destructMobile',
+			value: function destructMobile() {
+
+				$(this.menu).unbind('click');
+			}
+		}]);
+
+		return Menu;
+	}();
+
+	var menu = new Menu();
+
+	(function adaptiveMenu() {
+
+		var mobileView = window.matchMedia("(max-width: 768px)").matches,
+		    timing = 0;
+
+		if (mobileView) {
+			menu.initBurger();
+			menu.initMobile();
+		} else {
+			menu.destructMobile();
+		}
+
+		$(window).resize(function () {
+
+			if (!timing) {
+				timing = setTimeout(adaptiveMenu, 200);
+			}
+		});
+	})(menu);
+
+	/*function accordion(target, duration) {
+
+ 	target.toggleClass('mobile-open');
+ 	target.toggleClass('mobile-close');
+ 	if ( target.hasClass('hide') ){
+ 		target.removeClass('hide');
+ 		target.addClass('show');
+ 	} else {
+ 		target.removeClass('show');
+ 		setTimeout(function(){
+ 			target.addClass('hide');
+ 		}, duration);
+ 	}
+ }
+
+ //Mobile menu open
+ $('.c-hamburger').click(function(){
+
+ 	var $siteNav = $('.site-nav');
+ 	accordion($siteNav, 1000);
+ 	$(this).toggleClass('is-active');
+
+ });
+
+ //mobile menu accordion
+ $('.site-nav').on('click', '.site-nav__link', toggleMenu);
+
+ function toggleMenu(e){
+
+ 	e.preventDefault();
+
+ 	var $targetItem = $(this).parent(),
+ 			$otherItems = $(this).parent().siblings(),
+ 			$otherOpened = $otherItems.find('.show'),
+ 			$target = $(this).next();
+
+ 	$otherItems.removeClass('site-nav__item--act');
+ 	$targetItem.addClass('site-nav__item--act');
+ 	accordion($otherOpened, 1000);
+ 	accordion($target, 1000);
+
+ };*/
 
 	//press footer
 	(function pressFooter() {
@@ -99,7 +201,9 @@
 	})();
 
 	//map
+
 	(function initMap() {
+		var viewPort = window.matchMedia("(min-width: 768px)");
 		var center = viewPort ? { lat: 55.685973, lng: 37.339480 } : { lat: 55.6873, lng: 37.338 },
 		    blueSqure = { lat: 55.68375, lng: 37.34281 },
 		    octagon = { lat: 55.681204, lng: 37.3396 },

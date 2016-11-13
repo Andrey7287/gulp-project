@@ -44,6 +44,6 @@ gulp.watch('./js/my.js', ['concat']);
 gulp.task('default', ['babel', 'concat', 'compass'], function() {
 	browserSync.init({
 		server: ".",
-		files: ["css.css", "js/src/*.js", "*.html"]
+		files: ["css.css", "js/*.js", "*.html"]
 	});
 });

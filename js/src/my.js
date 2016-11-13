@@ -1,8 +1,6 @@
 /*MY SCRIPTS START*/
 (function () {
 
-	var mobileView = window.matchMedia("(min-width: 768px)").matches;
-
 	//$('any').ravno();
 	$.fn.ravno = function () {
 		var maxH = -1;
@@ -26,7 +24,116 @@
 	});
 
 
-	function accordion(target, duration) {
+	class Menu {
+
+		constructor (menu = '.site-nav', burger = '.c-hamburger') {
+
+			this.menu = menu;
+			this.item = menu + '__item';
+			this.activeItem = this.item + '--act';
+			this.link = this.menu + '__link';
+			this.burger = burger;
+			this.mobile
+		}
+
+		accordion(target, duration) {
+
+			target.toggleClass('mobile-open');
+			target.toggleClass('mobile-close');
+			if ( target.hasClass('hide') ){
+				target.removeClass('hide');
+				target.addClass('show');
+			} else {
+				target.removeClass('show');
+				setTimeout(function(){
+					target.addClass('hide');
+				}, duration);
+			}
+		}
+
+		toggleActiveClass(old, current) {
+
+			old.removeClass( this.activeItem.slice(1) );
+			current.addClass( this.activeItem.slice(1) );
+
+		}
+
+		initBurger() {
+
+			$(this.burger).click(()=> {
+
+				this.accordion( $(this.menu), 1000 );
+				$(this).toggleClass('is-active');
+
+			});
+
+		}
+
+		initMobile() {
+
+			$(this.menu).on('click', this.link, (e)=>{
+
+
+				e.preventDefault();
+
+				var $target = $(e.target).is(this.link) ? $(e.target) : $(e.target).parent(),
+						$targetItem = $target.parent(),
+						$otherItems = $targetItem.siblings(),
+						$otherOpened = $otherItems.find('.show'),
+						$otherOpenedItem = $otherOpened.parent(),
+						$innerMenu = $target.next();
+
+				if ( !$innerMenu.length ) {
+					location.href = $target.attr('href');
+					return;
+				}
+
+				this.toggleActiveClass($otherOpenedItem, $targetItem);
+				this.accordion($otherOpened, 1000);
+				this.accordion($innerMenu, 1000);
+
+			});
+
+		}
+
+		destructMobile() {
+
+			$(this.menu).unbind('click');
+
+		}
+
+	}
+
+	var menu = new Menu;
+
+	(function adaptiveMenu () {
+
+		var mobileView = window.matchMedia("(max-width: 768px)").matches,
+				timing = 0;
+
+		if ( mobileView ) {
+			menu.initBurger();
+			menu.initMobile();
+		} else {
+			menu.destructMobile();
+		}
+
+		$(window).resize(()=>{
+
+			if ( !timing ) {
+				timing = setTimeout(adaptiveMenu, 200);
+			}
+
+		});
+
+	})(menu);
+
+
+
+
+
+
+	/*function accordion(target, duration) {
 
 		target.toggleClass('mobile-open');
 		target.toggleClass('mobile-close');
@@ -55,31 +162,20 @@
 
 	function toggleMenu(e){
 
-		var $targetItem = $(this).parent(),
-				$otherItems = $(this).parent().siblings(),
-				$otherOpened = $menuItems.find('.show'),
-				$target = $(this).next();
-
 		e.preventDefault();
 
-		$menuItems.removeClass('site-nav__item--act');
+		var $targetItem = $(this).parent(),
+				$otherItems = $(this).parent().siblings(),
+				$otherOpened = $otherItems.find('.show'),
+				$target = $(this).next();
+
+		$otherItems.removeClass('site-nav__item--act');
 		$targetItem.addClass('site-nav__item--act');
 		accordion($otherOpened, 1000);
 		accordion($target, 1000);
 
-	};
+	};*/
 
-
-	var viewPort = window.matchMedia("(min-width: 768px)");
-
-
-	/*footer icons*/
-	$('.soc').on('mousedown', '.soc__item', function () {
-		$(this).addClass('soc__item--mousedown');
-	});
-	$('.soc').on('mouseup', '.soc__item', function () {
-		$(this).removeClass('soc__item--mousedown');
-	});
 
 	//press footer
 	(function pressFooter() {
@@ -102,7 +198,9 @@
 	})();
 
 	//map
+
 	(function initMap() {
+		var viewPort = window.matchMedia("(min-width: 768px)");
 		var	center = viewPort ? { lat: 55.685973, lng: 37.339480 } : { lat: 55.6873, lng: 37.338 },
 				blueSqure = { lat: 55.68375, lng: 37.34281 },
 				octagon = { lat: 55.681204, lng: 37.3396 },
