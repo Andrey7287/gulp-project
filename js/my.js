@@ -33,20 +33,37 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		function Menu() {
 			var menu = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.site-nav';
 			var burger = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.c-hamburger';
+			var duration = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1000;
 
 			_classCallCheck(this, Menu);
 
 			this.menu = menu;
 			this.item = menu + '__item';
 			this.activeItem = this.item + '--act';
-			this.link = this.menu + '__link';
+			this.link = menu + '__link';
 			this.burger = burger;
-			this.mobile;
+			this.duration = duration;
+			this.isAnimating = false;
 		}
 
 		_createClass(Menu, [{
+			key: 'toggleAnimatingState',
+			value: function toggleAnimatingState(duration) {
+				var _this = this;
+
+				this.isAnimating = true;
+				setTimeout(function () {
+					_this.isAnimating = false;
+				}, duration);
+			}
+		}, {
 			key: 'accordion',
 			value: function accordion(target, duration) {
+
+				if (this.isAnimating) {
+					return;
+				}
+				this.toggleAnimatingState(duration);
 
 				target.toggleClass('mobile-open');
 				target.toggleClass('mobile-close');
@@ -61,8 +78,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 				}
 			}
 		}, {
-			key: 'toggleActiveClass',
-			value: function toggleActiveClass(old, current) {
+			key: 'toggleActiveItem',
+			value: function toggleActiveItem(old, current) {
 
 				old.removeClass(this.activeItem.slice(1));
 				current.addClass(this.activeItem.slice(1));
@@ -70,24 +87,35 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'initBurger',
 			value: function initBurger() {
-				var _this = this;
+				var _this2 = this;
 
-				$(this.burger).click(function () {
+				$(this.burger).click(function (e) {
 
-					_this.accordion($(_this.menu), 1000);
-					$(_this).toggleClass('is-active');
+					var $button = $(e.target).is(_this2.burger) ? $(e.target) : $(e.target).parent();
+
+					_this2.accordion($(_this2.menu), 1000);
+					$button.toggleClass('is-active');
 				});
+			}
+		}, {
+			key: 'closeOpened',
+			value: function closeOpened(target) {
+
+				target.removeClass('mobile-open');
+				target.addClass('mobile-close');
+				target.removeClass('show');
+				target.addClass('hide');
 			}
 		}, {
 			key: 'initMobile',
 			value: function initMobile() {
-				var _this2 = this;
+				var _this3 = this;
 
 				$(this.menu).on('click', this.link, function (e) {
 
 					e.preventDefault();
 
-					var $target = $(e.target).is(_this2.link) ? $(e.target) : $(e.target).parent(),
+					var $target = $(e.target).is(_this3.link) ? $(e.target) : $(e.target).parent(),
 					    $targetItem = $target.parent(),
 					    $otherItems = $targetItem.siblings(),
 					    $otherOpened = $otherItems.find('.show'),
@@ -99,9 +127,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 						return;
 					}
 
-					_this2.toggleActiveClass($otherOpenedItem, $targetItem);
-					_this2.accordion($otherOpened, 1000);
-					_this2.accordion($innerMenu, 1000);
+					_this3.toggleActiveItem($otherItems, $targetItem);
+
+					_this3.closeOpened($otherOpened);
+					_this3.accordion($innerMenu, 1000);
 				});
 			}
 		}, {
@@ -136,47 +165,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			}
 		});
 	})(menu);
-
-	/*function accordion(target, duration) {
-
- 	target.toggleClass('mobile-open');
- 	target.toggleClass('mobile-close');
- 	if ( target.hasClass('hide') ){
- 		target.removeClass('hide');
- 		target.addClass('show');
- 	} else {
- 		target.removeClass('show');
- 		setTimeout(function(){
- 			target.addClass('hide');
- 		}, duration);
- 	}
- }
-
- //Mobile menu open
- $('.c-hamburger').click(function(){
-
- 	var $siteNav = $('.site-nav');
- 	accordion($siteNav, 1000);
- 	$(this).toggleClass('is-active');
-
- });
-
- //mobile menu accordion
- $('.site-nav').on('click', '.site-nav__link', toggleMenu);
-
- function toggleMenu(e){
- 		e.preventDefault();
- 		var $targetItem = $(this).parent(),
- 			$otherItems = $(this).parent().siblings(),
- 			$otherOpened = $otherItems.find('.show'),
- 			$target = $(this).next();
-
- 	$otherItems.removeClass('site-nav__item--act');
- 	$targetItem.addClass('site-nav__item--act');
- 	accordion($otherOpened, 1000);
- 	accordion($target, 1000);
-
- };*/
 
 	//press footer
 	(function pressFooter() {

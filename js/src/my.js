@@ -26,17 +26,30 @@
 
 	class Menu {
 
-		constructor (menu = '.site-nav', burger = '.c-hamburger') {
+		constructor (menu = '.site-nav', burger = '.c-hamburger', duration = 1000) {
 
 			this.menu = menu;
-			this.item = menu + '__item';
-			this.activeItem = this.item + '--act';
-			this.link = this.menu + '__link';
+			this.item = `${menu}__item`;
+			this.activeItem = `${this.item}--act`;
+			this.link = `${menu}__link`;
 			this.burger = burger;
-			this.mobile
+			this.duration = duration;
+			this.isAnimating = false;
+		}
+
+		toggleAnimatingState(duration) {
+
+			this.isAnimating = true;
+			setTimeout(()=>{
+				this.isAnimating = false;
+			}, duration);
+
 		}
 
 		accordion(target, duration) {
+
+			if (this.isAnimating) { return; }
+			this.toggleAnimatingState(duration);
 
 			target.toggleClass('mobile-open');
 			target.toggleClass('mobile-close');
@@ -51,7 +64,7 @@
 			}
 		}
 
-		toggleActiveClass(old, current) {
+		toggleActiveItem(old, current) {
 
 			old.removeClass( this.activeItem.slice(1) );
 			current.addClass( this.activeItem.slice(1) );
@@ -60,12 +73,23 @@
 
 		initBurger() {
 
-			$(this.burger).click(()=> {
+			$(this.burger).click((e)=> {
+
+				var $button = $(e.target).is(this.burger) ? $(e.target) : $(e.target).parent();
 
 				this.accordion( $(this.menu), 1000 );
-				$(this).toggleClass('is-active');
+				$button.toggleClass('is-active');
 
 			});
+
+		}
+
+		closeOpened(target) {
+
+			target.removeClass('mobile-open');
+			target.addClass('mobile-close');
+			target.removeClass('show');
+			target.addClass('hide');
 
 		}
 
@@ -88,8 +112,9 @@
 					return;
 				}
 
-				this.toggleActiveClass($otherOpenedItem, $targetItem);
-				this.accordion($otherOpened, 1000);
+				this.toggleActiveItem($otherItems, $targetItem);
+
+				this.closeOpened($otherOpened);
 				this.accordion($innerMenu, 1000);
 
 			});
@@ -129,52 +154,6 @@
 	})(menu);
 
 
-
-
-
-
-	/*function accordion(target, duration) {
-
-		target.toggleClass('mobile-open');
-		target.toggleClass('mobile-close');
-		if ( target.hasClass('hide') ){
-			target.removeClass('hide');
-			target.addClass('show');
-		} else {
-			target.removeClass('show');
-			setTimeout(function(){
-				target.addClass('hide');
-			}, duration);
-		}
-	}
-
-	//Mobile menu open
-	$('.c-hamburger').click(function(){
-
-		var $siteNav = $('.site-nav');
-		accordion($siteNav, 1000);
-		$(this).toggleClass('is-active');
-
-	});
-
-	//mobile menu accordion
-	$('.site-nav').on('click', '.site-nav__link', toggleMenu);
-
-	function toggleMenu(e){
-
-		e.preventDefault();
-
-		var $targetItem = $(this).parent(),
-				$otherItems = $(this).parent().siblings(),
-				$otherOpened = $otherItems.find('.show'),
-				$target = $(this).next();
-
-		$otherItems.removeClass('site-nav__item--act');
-		$targetItem.addClass('site-nav__item--act');
-		accordion($otherOpened, 1000);
-		accordion($target, 1000);
-
-	};*/
 
 
 	//press footer

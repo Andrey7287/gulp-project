@@ -22,7 +22,6 @@
 	@if $point == small {
 		@media (max-width: 480px) { @content; }
 	}
-	//additional
 	@if $point == tablet-desktop {
 		@media (min-width: 768px) { @content; }
 	}
