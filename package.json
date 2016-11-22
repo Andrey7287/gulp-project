@@ -4,6 +4,7 @@
   "description": "description here",
   "main": "index.js",
   "scripts": {
+		"prod": "SET NODE_ENV=production && npm install",
     "test": "echo \\\"Error: no test specified\\\" && exit 1"
   },
   "repository": {
@@ -19,9 +20,11 @@
     "url": "https://github.com/Andrey7287/name/issues"
   },
   "homepage": "https://github.com/Andrey7287/name#readme",
+	"devDependencies": {
+		"bootstrap-sass": "^3.3.6"
+	},
   "devDependencies": {
     "babel-preset-es2015": "^6.18.0",
-    "bootstrap-sass": "^3.3.6",
     "browser-sync": "^2.13.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
